@@ -40,10 +40,10 @@ impl State {
             todo!()
         }
         curs_set(CURSOR_VISIBILITY::CURSOR_VISIBLE);
-        if self.current.path.is_some() {
-            self.display_file();
-        } else {
+        if self.current.buffer.is_empty() {
             self.display_empty(dimensions, display);
+        } else {
+            self.display_file(dimensions, display);
         }
 
         wrefresh(self.win);
@@ -63,7 +63,7 @@ impl State {
         }
     }
 
-    fn display_file(&self) {}
+    fn display_file(&self, dimensions: Pos<i32>, display: Pos<i32>) {}
 }
 
 #[cfg(test)]
