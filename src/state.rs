@@ -7,7 +7,6 @@ const ARRANO_EMPTY_TEXT2: &str = "Arrano is free and open source";
 
 #[derive(Debug)]
 pub struct State {
-    pub files: Vec<ArranoFile>,
     pub current: ArranoFile,
     pub win: WINDOW,
     pub screen_pos: Pos<i32>,
@@ -26,11 +25,7 @@ impl State {
             None => ArranoFile::new_empty(),
         };
 
-        let mut files: Vec<ArranoFile> = Vec::new();
-        files.push(archivo.clone());
-
         Ok(State {
-            files,
             current: archivo,
             win,
 
@@ -45,7 +40,6 @@ impl State {
             todo!()
         }
         curs_set(CURSOR_VISIBILITY::CURSOR_VISIBLE);
-        self.display_files(dimensions);
         if self.current.path.is_some() {
             self.display_file();
         } else {
@@ -70,25 +64,6 @@ impl State {
     }
 
     fn display_file(&self) {}
-
-    fn display_files(&self, dimensions: Pos<i32>) {
-        wattron(self.win, COLOR_PAIR(2) | A_BOLD());
-        mvwhline(self.win, 0, 0, 32, dimensions.x);
-        wattroff(self.win, COLOR_PAIR(2) | A_BOLD());
-        let mut i = 1;
-        self.files.iter().for_each(|f| {
-            if f.path.is_some() {
-                let fmt = f.path.as_ref().to_owned().unwrap().to_str().unwrap();
-                mvwprintw(self.win, 0, i, &fmt);
-                i += fmt.len() as i32 + 1;
-            } else {
-                let fmt = format!("Empty file");
-                mvwprintw(self.win, 0, i, &fmt);
-                i += fmt.len() as i32 + 1;
-            }
-        });
-        wrefresh(self.win);
-    }
 }
 
 #[cfg(test)]
