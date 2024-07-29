@@ -63,7 +63,20 @@ impl State {
         }
     }
 
-    fn display_file(&self, dimensions: Pos<i32>, display: Pos<i32>) {}
+    fn display_file(&self, _dimensions: Pos<i32>, display: Pos<i32>) {
+        let mut lines = 0;
+        for (i, elem) in self.current.buffer.to_owned().into_iter().enumerate() {
+            mvwprintw(self.win, i as i32 + 1, 5, &elem);
+            let f = format!("{}", i as i32 + 1);
+            mvwprintw(self.win, i as i32 + 1, 0, &f);
+            lines = i as i32 + 1;
+        }
+        lines += 1;
+        for i in lines..display.y {
+            mvwprintw(self.win, i, 0, "~");
+        }
+        wrefresh(self.win);
+    }
 }
 
 #[cfg(test)]

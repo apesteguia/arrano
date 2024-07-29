@@ -45,6 +45,15 @@ impl App {
     }
 
     pub fn display(&mut self) {
+        {
+            let x = getmaxx(stdscr());
+            let y = getmaxy(stdscr());
+            if self.dimensions.x != x || self.dimensions.y != y {
+                self.dimensions.x = x;
+                self.dimensions.y = y;
+            }
+        }
+
         self.display_files();
         self.buffers[self.current].display(self.dimensions, self.display);
         let mut i = 1;
@@ -165,6 +174,18 @@ impl App {
     fn handle_action(&mut self) -> std::io::Result<()> {
         match self.command.as_str() {
             ":q" => {
+                self.buffers.remove(self.current);
+                if self.buffers.is_empty() {
+                    self.terminado = true;
+                    endwin();
+                    exit(0);
+                } else {
+                    self.current -= 1;
+                    self.display();
+                }
+            }
+            ":qa" => {
+                self.buffers.clear();
                 self.terminado = true;
                 endwin();
                 exit(0);
